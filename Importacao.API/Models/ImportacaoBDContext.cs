@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
@@ -17,7 +15,7 @@ namespace Importacao.API.Models
         {
         }
 
-        public virtual DbSet<Importacao> Importacaos { get; set; }
+        public virtual DbSet<ImportacaoModel> Importacaos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -31,7 +29,7 @@ namespace Importacao.API.Models
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Latin1_General_CI_AS");
 
-            modelBuilder.Entity<Importacao>(entity =>
+            modelBuilder.Entity<ImportacaoModel>(entity =>
             {
                 entity.HasKey(e => e.IdImportacao);
 

@@ -1,8 +1,6 @@
 ﻿using Importacao.API.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Importacao.API.Repositories.Base
@@ -16,10 +14,14 @@ namespace Importacao.API.Repositories.Base
             _dbContext = dbContext;
         }
 
-        public async Task CreateAsync(T entity)
+        public async Task<List<T>> CreateAsync(List<T> list_entity)
         {
-            _dbContext.Set<T>().Add(entity);
+            for (int i = 0; i < list_entity.Count; i++)
+            {
+                _dbContext.Set<T>().Add(list_entity[i]);
+            }
             await SaveAsync();
+            return list_entity;
         }
 
         public async Task<IEnumerable<T>> FindAllAsync()
