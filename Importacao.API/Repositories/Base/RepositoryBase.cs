@@ -24,6 +24,13 @@ namespace Importacao.API.Repositories.Base
             return list_entity;
         }
 
+        public async Task<T> CreateAsync(T entity)
+        {
+            _dbContext.Set<T>().Add(entity);
+            await SaveAsync();
+            return entity;
+        }
+
         public async Task<IEnumerable<T>> FindAllAsync()
         {
             return await _dbContext.Set<T>().ToListAsync();

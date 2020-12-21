@@ -1,6 +1,9 @@
-﻿using ExcelDataReader;
+﻿using AutoMapper;
+using ExcelDataReader;
 using Importacao.API.Models;
 using Importacao.API.Repositories;
+using Importacao.API.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,37 +14,44 @@ using System.Threading.Tasks;
 
 namespace Importacao.API.Controllers
 {
-    [Route("[controller]")]
+    [Route("importacao")]
     [ApiController]
     public class ImportarExcelController : ControllerBase
     {
-        private ImportacaoRepository _repositorio;
+        private readonly IMapper _mapper;
+        private ImportacaoModelRepository _repositorio;
 
-        public ImportarExcelController(ImportacaoRepository repositorio)
+        public ImportarExcelController(ImportacaoModelRepository repositorio, IMapper mapper)
         {
             _repositorio = repositorio;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetImportacoes()
         {
-            var listaImportacoes = await _repositorio.FindAllAsync();
-            return Ok(listaImportacoes);
+            var listaImportacoes = await _repositorio.FindAllAsyncIncludeImportacaoItems();
+            var listaImportacoesMapeada = _mapper.Map<IEnumerable<ImportacaoViewModel>>(listaImportacoes);
+            return Ok(listaImportacoesMapeada);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetImportacaoPorID(int idImportacao)
+        public async Task<ActionResult> GetImportacaoPorID(int id)
         {
-            var objImportacao = await _repositorio.FindAsync(idImportacao);
+            var objImportacao = await _repositorio.FindAsyncIncludeImportacaoItems(id);
             if (objImportacao != null)
-                return Ok(objImportacao);
+            {
+                var objImportacaoMapeado = _mapper.Map<ImportacaoViewModel>(objImportacao);
+                return Ok(objImportacaoMapeado);
+            }
             else
                 return NotFound();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> InsertImportacao(IFormFile arquivoImportacao)
+        [HttpPost("importarExcel")]
+        public async Task<ActionResult> InsertImportacao()
         {
+            var arquivoImportacao = Request.Form.Files[0];
             using (var stream = new MemoryStream())
             {
                 arquivoImportacao.CopyTo(stream);
@@ -57,25 +67,27 @@ namespace Importacao.API.Controllers
                     });
 
                     var registros = result.Tables[0];
-                    List<ImportacaoModel> listaObjImportacao = new List<ImportacaoModel>();
+                    ImportacaoModel objImportacaoModel = new ImportacaoModel();
+                    objImportacaoModel.DataCadastro = DateTime.Now;
+                    List<ImportacaoItemModel> listaObjImportacaoItemModel = new List<ImportacaoItemModel>();
                     List<string> listaErros = new List<string>();
                     for (int i = 0; i < registros.Rows.Count; i++)
                     {
-                        ImportacaoModel objImportacao = new ImportacaoModel();
+                        ImportacaoItemModel objImportacaoItemModel = new ImportacaoItemModel();
                         string dataEntrega = registros.Rows[i][0].ToString();
                         if (!string.IsNullOrEmpty(dataEntrega))
-                            objImportacao.DataEntrega = DateTime.Parse(dataEntrega).Date;
-                        objImportacao.Descricao = registros.Rows[i][1].ToString();
+                            objImportacaoItemModel.DataEntrega = DateTime.Parse(dataEntrega).Date;
+                        objImportacaoItemModel.Descricao = registros.Rows[i][1].ToString();
                         string quantidade = registros.Rows[i][2].ToString();
                         if (!string.IsNullOrEmpty(quantidade))
-                            objImportacao.Quantidade = int.Parse(quantidade);
+                            objImportacaoItemModel.Quantidade = int.Parse(quantidade);
                         string valorUnitario = registros.Rows[i][3].ToString();
                         if (!string.IsNullOrEmpty(valorUnitario))
-                            objImportacao.ValorUnitario = decimal.Round(decimal.Parse(valorUnitario), 2);
-                        objImportacao.DataCadastro = DateTime.Now;
-                        if (TryValidateModel(objImportacao))
+                            objImportacaoItemModel.ValorUnitario = decimal.Round(decimal.Parse(valorUnitario), 2);
+
+                        if (TryValidateModel(objImportacaoItemModel))
                         {
-                            listaObjImportacao.Add(objImportacao);
+                            listaObjImportacaoItemModel.Add(objImportacaoItemModel);
                         }
                         else
                         {
@@ -94,7 +106,8 @@ namespace Importacao.API.Controllers
                     }
                     else
                     {
-                        return Ok(await _repositorio.CreateAsync(listaObjImportacao));
+                        objImportacaoModel.ImportacaoItems = listaObjImportacaoItemModel;
+                        return Ok(await _repositorio.CreateAsync(objImportacaoModel));
                     }
                 }
             }

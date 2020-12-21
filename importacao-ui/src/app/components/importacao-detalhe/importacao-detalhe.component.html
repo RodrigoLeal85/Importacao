@@ -1,0 +1,35 @@
+<mat-toolbar class="">
+    <span>Importação App</span>
+</mat-toolbar>
+<div *ngIf="importacao">
+    <table mat-table [dataSource]='importacao.importacaoItems' class="mat-elevation-z8">
+        <ng-container matColumnDef="idImportacaoItem">
+            <th mat-header-cell *matHeaderCellDef>ID Item</th>
+            <td mat-cell *matCellDef="let element"> {{ element.idImportacaoItem }} </td>
+        </ng-container>
+        <ng-container matColumnDef="dataEntrega">
+            <th mat-header-cell *matHeaderCellDef>Data Entrega</th>
+            <td mat-cell *matCellDef="let element"> {{ element.dataEntrega }} </td>
+        </ng-container>
+        <ng-container matColumnDef="descricao">
+            <th mat-header-cell *matHeaderCellDef>Descrição</th>
+            <td mat-cell *matCellDef="let element"> {{ element.descricao }} </td>
+        </ng-container>
+        <ng-container matColumnDef="quantidade">
+            <th mat-header-cell *matHeaderCellDef>Quantidade</th>
+            <td mat-cell *matCellDef="let element"> {{ element.quantidade }} </td>
+        </ng-container>
+        <ng-container matColumnDef="valorUnitario">
+            <th mat-header-cell *matHeaderCellDef>Valor Unitário</th>
+            <td mat-cell *matCellDef="let element"> {{ element.valorUnitario }} </td>
+        </ng-container>
+        <ng-container matColumnDef="valorTotal">
+            <th mat-header-cell *matHeaderCellDef>Valor Total</th>
+            <td mat-cell *matCellDef="let element"> {{ element.valorTotal }} </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+

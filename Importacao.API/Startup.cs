@@ -1,6 +1,8 @@
+using AutoMapper;
 using Importacao.API.Models;
 using Importacao.API.Repositories;
 using Importacao.API.Repositories.Base;
+using Importacao.API.ViewModels.Mapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,7 +36,12 @@ namespace Importacao.API
 
             services.AddControllers();
 
-            services.AddScoped<ImportacaoRepository>();
+            services.AddScoped<ImportacaoModelRepository>();
+            services.AddScoped<ImportacaoItemModelRepository>();
+
+            services.AddAutoMapper(typeof(ImportacaoProfile));
+
+            services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSwaggerGen(c =>
             {
@@ -46,6 +53,11 @@ namespace Importacao.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            app.UseCors(builder =>
+                builder.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
             if (env.IsDevelopment())
             {
