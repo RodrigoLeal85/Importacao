@@ -1,35 +1,53 @@
-<mat-toolbar class="">
-    <span>Importação App</span>
-</mat-toolbar>
-<div *ngIf="importacao">
-    <table mat-table [dataSource]='importacao.importacaoItems' class="mat-elevation-z8">
-        <ng-container matColumnDef="idImportacaoItem">
-            <th mat-header-cell *matHeaderCellDef>ID Item</th>
-            <td mat-cell *matCellDef="let element"> {{ element.idImportacaoItem }} </td>
-        </ng-container>
-        <ng-container matColumnDef="dataEntrega">
-            <th mat-header-cell *matHeaderCellDef>Data Entrega</th>
-            <td mat-cell *matCellDef="let element"> {{ element.dataEntrega }} </td>
-        </ng-container>
-        <ng-container matColumnDef="descricao">
-            <th mat-header-cell *matHeaderCellDef>Descrição</th>
-            <td mat-cell *matCellDef="let element"> {{ element.descricao }} </td>
-        </ng-container>
-        <ng-container matColumnDef="quantidade">
-            <th mat-header-cell *matHeaderCellDef>Quantidade</th>
-            <td mat-cell *matCellDef="let element"> {{ element.quantidade }} </td>
-        </ng-container>
-        <ng-container matColumnDef="valorUnitario">
-            <th mat-header-cell *matHeaderCellDef>Valor Unitário</th>
-            <td mat-cell *matCellDef="let element"> {{ element.valorUnitario }} </td>
-        </ng-container>
-        <ng-container matColumnDef="valorTotal">
-            <th mat-header-cell *matHeaderCellDef>Valor Total</th>
-            <td mat-cell *matCellDef="let element"> {{ element.valorTotal }} </td>
-        </ng-container>
-    
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-</div>
+<div>
+    <mat-card *ngIf="error">       
+        <mat-card-title><h2 class="h2_erro">Erro na importação</h2><hr class="hr_erro"/></mat-card-title> 
+        <mat-card-content>
+            <div class="erro">{{error}}</div>
+        </mat-card-content>        
+    </mat-card>
+    <mat-card *ngIf="!error">       
+        <mat-card-title><h2>Dados da Importação</h2><hr/></mat-card-title> 
+        <mat-card-content>
+            <div style="margin:1%">
+                <span style="font-size: larger; font-weight: 500;">Identificador: {{importacao.idImportacao}}</span>                                                
+                <span style="font-size: larger; font-weight: 500;margin-left: 20px;">Data Cadastro: {{importacao.dataCadastro | date: 'd/M/y'}}</span>                                
+            </div>                                        
+        </mat-card-content>                
+    </mat-card>    
+    <mat-card style="margin-bottom: 1%;" *ngIf="!error">              
+        <mat-card-title><h2>Lista dos Itens da Importação {{importacao.idImportacao}}</h2><hr/></mat-card-title> 
+        <mat-card-content>        
+            <table mat-table [dataSource]='importacao.importacaoItems' class="mat-elevation-z8">
+                <ng-container matColumnDef="idImportacaoItem">
+                    <th mat-header-cell *matHeaderCellDef>ID Item</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.idImportacaoItem }} </td>
+                </ng-container>
+                <ng-container matColumnDef="dataEntrega">
+                    <th mat-header-cell *matHeaderCellDef>Data Entrega</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.dataEntrega | date: 'd/M/y' }} </td>
+                </ng-container>
+                <ng-container matColumnDef="descricao">
+                    <th mat-header-cell *matHeaderCellDef>Descrição</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.descricao }} </td>
+                </ng-container>
+                <ng-container matColumnDef="quantidade">
+                    <th mat-header-cell *matHeaderCellDef>Quantidade</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.quantidade }} </td>
+                </ng-container>
+                <ng-container matColumnDef="valorUnitario">
+                    <th mat-header-cell *matHeaderCellDef>Valor Unitário</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.valorUnitario | currency:'BRL' }} </td>
+                </ng-container>
+                <ng-container matColumnDef="valorTotal">
+                    <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Valor Total</th>
+                    <td mat-cell *matCellDef="let element" style="font-weight: bold;"> {{ element.valorTotal | currency:'BRL' }} </td>
+                </ng-container>
+            
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </mat-card-content>                
+    </mat-card>
+</div>    
+
 

@@ -4,7 +4,8 @@ import { ImportacaoDetalheComponent } from './components/importacao-detalhe/impo
 import { ImportacaoComponent } from './components/importacao/importacao.component';
 
 const routes: Routes = [
-  {path: '', component: ImportacaoComponent},
+  { path: '', redirectTo: '/importacao', pathMatch: 'full' },
+  {path: 'importacao', component: ImportacaoComponent},
   {path: 'importacao/:id', component: ImportacaoDetalheComponent}
 ];
 

@@ -49,7 +49,7 @@ namespace Importacao.API.Controllers
         }
 
         [HttpPost("importarExcel")]
-        public async Task<ActionResult> InsertImportacao()
+        public async Task<ActionResult> InsertImportacaoExcel()
         {
             var arquivoImportacao = Request.Form.Files[0];
             using (var stream = new MemoryStream())
@@ -94,7 +94,7 @@ namespace Importacao.API.Controllers
                             var erros = ModelState.SelectMany(x => x.Value.Errors).Select(e => e.ErrorMessage).ToList();
                             for (int j = 0; j < erros.Count(); j++)
                             {
-                                string erro = $"Erro na linha {i + 2}. Mensagem: {erros[j]}";//Soma 2 por causa do cabeçalho.
+                                string erro = $"\n Erro na linha {i + 2}. Mensagem: {erros[j]}";//Soma 2 por causa do cabeçalho.
                                 listaErros.Add(erro);
                             }
                         }

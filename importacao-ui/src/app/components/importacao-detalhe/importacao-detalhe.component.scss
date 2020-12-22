@@ -1,11 +1,41 @@
 table {
-    width: 80%;
-    margin: 2%;
+    width: 98%;
+    margin: 1%;    
+    margin-bottom: 1% !important;
 }
-mat-toolbar{
-    color: white;
-    background-color: cornflowerblue;
+mat-card {
+    margin:0 auto;
+    width: 94%;
+    margin-top: 1%;
+}
+mat-card-content {
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+h2{
+    color: cornflowerblue;
+}
+hr{
+    color: cornflowerblue;
+}
+.h2_erro{
+    color: crimson !important;
+}
+.hr_erro{
+    color: crimson !important;
 }
 .importar{
     margin: 2%;
+}
+.erro{
+    color: crimson;
+    font-weight: 500;
+    white-space: pre-wrap;
+    margin-bottom: 1% !important;
+}
+.spinner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
 }
